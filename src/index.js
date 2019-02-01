@@ -1,7 +1,6 @@
 const PassThrough = require('stream').PassThrough
 const record = require('node-record-lpcm16')
 const Analyser = require('audio-analyser')
-const Generator = require('audio-generator')
 
 const speech = require('@google-cloud/speech')
 const client = new speech.SpeechClient()
@@ -77,7 +76,7 @@ const startListening = () => {
         avg = sum / session.levels.length
         console.log('volume for session', avg)
         if (avg > -50) {
-          console.log('HÅLL KÄFTEN')
+          console.log('var lite tysta nu va')
         }
         record.stop()
         return
@@ -104,19 +103,8 @@ const startListening = () => {
     session.levels.push(volume)
   })
 
-  // audioStream.pipe(recognizeStream)
   audioStream.pipe(analyser)
   analyser.pipe(recognizeStream)
 }
-// analyser.on('close', () => {
-//   console.log('analyser was closed')
-// })
 
 startListening()
-// Generator({
-//   generate: function() {
-//     return Math.random()
-//   },
-//   samplesPerFrame: 64,
-//   duration: 1
-// }).pipe(analyser)
