@@ -12,6 +12,7 @@
   "dependencies": {
     "@google-cloud/speech": "^2.2.0",
     "audio-analyser": "^1.0.2",
-    "node-record-lpcm16": "^0.3.1"
+    "node-record-lpcm16": "^0.3.1",
+    "socketio": "^1.0.0"
   }
 }

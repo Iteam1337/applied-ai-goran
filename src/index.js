@@ -1,9 +1,9 @@
-const PassThrough = require('stream').PassThrough
 const record = require('node-record-lpcm16')
 const Analyser = require('audio-analyser')
 
 const speech = require('@google-cloud/speech')
 const client = new speech.SpeechClient()
+const io = require('socket.io')(1337)
 
 const encoding = 'LINEAR16'
 const sampleRateHertz = 16000
@@ -76,6 +76,7 @@ const startListening = () => {
         avg = sum / session.levels.length
         console.log('volume for session', avg)
         if (avg > -50) {
+          io.emit('shutup')
           console.log('var lite tysta nu va')
         }
         record.stop()
@@ -87,6 +88,7 @@ const startListening = () => {
           console.log(
             `${session.id} - ${result.alternatives[0].transcript} - ${volume}dB`
           )
+          io.emit('transcript', result.alternatives[0].transcript)
         })
     })
 
@@ -101,6 +103,8 @@ const startListening = () => {
   }).on('data', function() {
     volume = this.getFrequencyData().reduce((i, max) => (i > max ? i : max))
     session.levels.push(volume)
+    io.emit('volume', volume)
+
   })
 
   audioStream.pipe(analyser)
