@@ -4,6 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
+    "listen": "GOOGLE_APPLICATION_CREDENTIALS=./key.json node ./src/listen.js",
     "start": "GOOGLE_APPLICATION_CREDENTIALS=./key.json node ./src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
