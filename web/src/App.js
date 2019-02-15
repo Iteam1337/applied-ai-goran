@@ -1,28 +1,37 @@
-import React, { Component } from 'react';
-import logo from './logo.svg';
-import './App.css';
+import React, { useState, useEffect } from 'react'
+import './App.css'
+import styled from 'styled-components'
+import openSocket from 'socket.io-client';
 
-class App extends Component {
-  render() {
-    return (
-      <div className="App">
-        <header className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <p>
-            Edit <code>src/App.js</code> and save to reload.
-          </p>
-          <a
-            className="App-link"
-            href="https://reactjs.org"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Learn React
-          </a>
-        </header>
-      </div>
-    );
-  }
+const NoisyBg = styled.div`
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  width: 100%;
+  height: 100vh;
+  background-color: ${props => props.noisy ? 'red' : 'white'}
+`
+
+const App = () => {
+  const [noisy, setNoisy] = useState(false)
+  const [value, setValue] = useState({})
+
+  useEffect(() => {
+    const socket = openSocket('http://localhost:1337')
+    socket.on('transcript', ({ transcript, confidence, soundLevel }) => {
+      if (transcript && confidence && soundLevel) {
+        console.log('yeah', confidence, soundLevel)
+        setNoisy(confidence <= 0.8 && soundLevel > 5)
+        setValue({transcript, confidence, soundLevel})
+      }
+    })
+  }, [])
+
+  return <NoisyBg noisy={noisy}>
+    { noisy && 'Shut up!' }
+    { JSON.stringify(value) }
+  </NoisyBg>
 }
 
-export default App;
+export default App
