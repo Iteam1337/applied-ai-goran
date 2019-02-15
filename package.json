@@ -6,6 +6,7 @@
   "scripts": {
     "listen": "GOOGLE_APPLICATION_CREDENTIALS=./key.json node ./src/listen.js",
     "start": "GOOGLE_APPLICATION_CREDENTIALS=./key.json node ./src/index.js",
+    "dev": "GOOGLE_APPLICATION_CREDENTIALS=./key.json nodemon ./src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "",
@@ -17,6 +18,7 @@
     "socketio": "^1.0.0"
   },
   "devDependencies": {
-    "eslint": "^5.6.0"
+    "eslint": "^5.6.0",
+    "nodemon": "^1.18.10"
   }
 }
