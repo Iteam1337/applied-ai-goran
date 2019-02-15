@@ -5,6 +5,7 @@ const start = () => {
   const listen = spawn('npm', ['run', 'listen'])
 
   listen.stdout.on('data', async data => {
+    // console.log('data', data.toString())
     try {
       const message = JSON.parse(data.toString())
       io.emit('transcript', message)
@@ -19,13 +20,13 @@ const start = () => {
   })
 }
 
-setInterval(() => {
-  io.emit('transcript', {
-    transcript: 'hej det här är ett automatiskt meddelande',
-    confidence: 0.7,
-    soundLevel: 7
-  })
-  console.log('deo')
-}, 1000)
+// setInterval(() => {
+//   io.emit('transcript', {
+//     transcript: 'hej det här är ett automatiskt meddelande',
+//     confidence: 0.7,
+//     soundLevel: 7
+//   })
+//   console.log('deo')
+// }, 1000)
 
 start()

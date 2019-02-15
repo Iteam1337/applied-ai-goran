@@ -22,9 +22,9 @@ const App = () => {
     socket.on('transcript', ({ transcript, confidence, soundLevel }) => {
       if (transcript && confidence && soundLevel) {
         console.log('yeah', confidence, soundLevel)
-        setNoisy(confidence <= 0.8 && soundLevel > 5)
-        setValue({transcript, confidence, soundLevel})
+        setNoisy(confidence <= 0.8 && soundLevel > -60)
       }
+      setValue({transcript, confidence, soundLevel})
     })
   }, [])
 

@@ -9,19 +9,22 @@ const languageCode = 'sv-SE'
 const levels = []
 let volume = 0
 
+const logStuff = ({ transcript, confidence, soundLevel }) =>
+  console.log(
+    JSON.stringify({
+      transcript,
+      confidence,
+      soundLevel
+    })
+  )
+
 let soundVolumeEmitter
 const resetSoundVolumeEmitter = () => {
   clearTimeout(soundVolumeEmitter)
   soundVolumeEmitter = setTimeout(() => {
-    console.log(
-      JSON.stringify({
-        transcript: '',
-        confidence: 0,
-        soundLevel: volume
-      })
-    )
+    logStuff({ transcript: '', confidence: 0, soundLevel: volume })
     resetSoundVolumeEmitter()
-  })
+  }, 2000)
 }
 
 const request = {
@@ -85,3 +88,6 @@ const analyser = new Analyser({
 
 audioStream.pipe(analyser)
 analyser.pipe(recognizeStream)
+resetSoundVolumeEmitter()
+
+logStuff({ transcript: '', confidence: 0, soundLevel: volume })
