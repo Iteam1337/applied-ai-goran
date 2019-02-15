@@ -15,5 +15,8 @@
     "audio-analyser": "^1.0.2",
     "node-record-lpcm16": "^0.3.1",
     "socketio": "^1.0.0"
+  },
+  "devDependencies": {
+    "eslint": "^5.13.0"
   }
 }
