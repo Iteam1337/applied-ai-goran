@@ -13,6 +13,15 @@ const start = () => {
     console.log('closed')
     start()
   })
+
+  setInterval(() => {
+    io.emit('transcript', {
+      transcript: 'hej det här är ett automatiskt meddelande',
+      confidence: 0.8,
+      soundLevel: 7
+    })
+    console.log('deo')
+  }, 1000)
 }
 
 start()
