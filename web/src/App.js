@@ -15,6 +15,7 @@ const NoisyBg = styled.div`
 
 const App = () => {
   const [noisy, setNoisy] = useState(false)
+  const [value, setValue] = useState({})
 
   useEffect(() => {
     const socket = openSocket('http://localhost:1337')
@@ -22,12 +23,14 @@ const App = () => {
       if (transcript && confidence && soundLevel) {
         console.log('yeah', confidence, soundLevel)
         setNoisy(confidence <= 0.8 && soundLevel > 5)
+        setValue({transcript, confidence, soundLevel})
       }
     })
   }, [])
 
   return <NoisyBg noisy={noisy}>
     { noisy && 'Shut up!' }
+    { JSON.stringify(value) }
   </NoisyBg>
 }
 
