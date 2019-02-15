@@ -5,6 +5,7 @@ const start = () => {
   const listen = spawn('npm', ['run', 'listen'])
 
   listen.stdout.on('data', async data => {
+    // console.log('data', data.toString())
     try {
       const message = JSON.parse(data.toString())
       io.emit('transcript', message)

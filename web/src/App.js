@@ -5,6 +5,7 @@ import openSocket from 'socket.io-client'
 
 const NoisyBg = styled.div`
   display: flex;
+  flex-direction: column;
   justify-content: center;
   align-items: center;
 
@@ -26,15 +27,14 @@ const smiley = mood => (
 const App = () => {
   const [noisy, setNoisy] = useState(false)
   const [value, setValue] = useState({})
-  const [mood, setMood] = useState('normal')
+  // const [mood, setMood] = useState('normal')
 
   useEffect(() => {
     const socket = openSocket('http://localhost:1337')
     socket.on('transcript', ({ transcript, confidence, soundLevel }) => {
-      if (transcript && confidence && soundLevel) {
-        console.log('yeah', confidence, soundLevel)
-        setNoisy(confidence <= 0.8 && soundLevel > 5)
+      if (soundLevel) {
         setValue({ transcript, confidence, soundLevel })
+        setNoisy(confidence <= 0.8 && soundLevel > -55)
       }
     })
   }, [])
@@ -43,7 +43,7 @@ const App = () => {
     <NoisyBg noisy={noisy}>
       {noisy && 'Shut up!'}
       {JSON.stringify(value)}
-      {smiley(mood)}
+      {smiley(noisy ? 'angry' : value.soundLevel < -50 ? 'normal' : 'happy')}
     </NoisyBg>
   )
 }

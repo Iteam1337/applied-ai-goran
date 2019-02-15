@@ -1,4 +1,4 @@
-const record = require('node-record-lpcm16')
+const record = require('./record')
 const Analyser = require('audio-analyser')
 const speech = require('@google-cloud/speech').v1p1beta1
 const client = new speech.SpeechClient()
@@ -9,19 +9,22 @@ const languageCode = 'sv-SE'
 const levels = []
 let volume = 0
 
+const logStuff = ({ transcript, confidence, soundLevel }) =>
+  console.log(
+    JSON.stringify({
+      transcript,
+      confidence,
+      soundLevel
+    })
+  )
+
 let soundVolumeEmitter
 const resetSoundVolumeEmitter = () => {
   clearTimeout(soundVolumeEmitter)
   soundVolumeEmitter = setTimeout(() => {
-    console.log(
-      JSON.stringify({
-        transcript: '',
-        confidence: 0,
-        soundLevel: volume
-      })
-    )
+    logStuff({ transcript: '', confidence: 0, soundLevel: volume })
     resetSoundVolumeEmitter()
-  })
+  }, 3000)
 }
 
 const request = {
@@ -39,12 +42,16 @@ const request = {
 const audioStream = record
   .start({
     sampleRateHertz,
-    threshold: 0,
+    threshold: 0.5,
     verbose: false,
-    recordProgram: 'rec',
-    silence: '2.0'
+    recordProgram: 'rec'
   })
   .on('error', console.error)
+  .on('close', () => {
+    setTimeout(() => {
+      process.exit(0)
+    }, 1000)
+  })
 
 const recognizeStream = client
   .streamingRecognize(request)
@@ -58,7 +65,7 @@ const recognizeStream = client
       console.log(
         JSON.stringify({
           transcript: result.alternatives[0].transcript,
-          confidence: result.alternatives[0].confidence,
+          confidence: 1.0, // result.alternatives[0].confidence,
           soundLevel: volume
         })
       )
@@ -85,3 +92,6 @@ const analyser = new Analyser({
 
 audioStream.pipe(analyser)
 analyser.pipe(recognizeStream)
+resetSoundVolumeEmitter()
+
+logStuff({ transcript: '', confidence: 0, soundLevel: volume })
