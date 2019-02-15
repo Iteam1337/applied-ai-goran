@@ -9,6 +9,21 @@ const languageCode = 'sv-SE'
 const levels = []
 let volume = 0
 
+let soundVolumeEmitter
+const resetSoundVolumeEmitter = () => {
+  clearTimeout(soundVolumeEmitter)
+  soundVolumeEmitter = setTimeout(() => {
+    console.log(
+      JSON.stringify({
+        transcript: '',
+        confidence: 0,
+        soundLevel: volume
+      })
+    )
+    resetSoundVolumeEmitter()
+  })
+}
+
 const request = {
   config: {
     encoding,
@@ -25,7 +40,7 @@ const audioStream = record
   .start({
     sampleRateHertz,
     threshold: 0,
-    verbose: true,
+    verbose: false,
     recordProgram: 'rec',
     silence: '2.0'
   })
@@ -47,6 +62,7 @@ const recognizeStream = client
           soundLevel: volume
         })
       )
+      resetSoundVolumeEmitter()
     })
   })
   .on('close', () => {
