@@ -7,6 +7,7 @@ const start = () => {
   listen.stdout.on('data', async data => {
     const text = data.toString()
     // io.emit here => !
+    io.emit(text)
     console.log(text)
   })
 
