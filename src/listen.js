@@ -18,7 +18,7 @@ const request = {
     enableSpeakerDiarization: true
   },
   singleUtterance: false,
-  interimResults: false
+  interimResults: true
 }
 
 const audioStream = record
@@ -40,7 +40,7 @@ const recognizeStream = client
       record.stop()
     }
     data.results.forEach(result => {
-      console.log(`\e[39;5;220m${result.alternatives[0].transcript}`)
+      console.log(`${result.alternatives[0].transcript}`)
     })
   })
   .on('close', () => {

@@ -6,8 +6,7 @@ const start = () => {
 
   listen.stdout.on('data', async data => {
     const text = data.toString()
-    // io.emit here => !
-    console.log(text)
+    io.emit('transcript', text)
   })
 
   listen.on('close', code => {
