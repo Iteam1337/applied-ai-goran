@@ -40,7 +40,13 @@ const recognizeStream = client
       record.stop()
     }
     data.results.forEach(result => {
-      console.log(`${result.alternatives[0].transcript}`)
+      console.log(
+        JSON.stringify({
+          transcript: result.alternatives[0].transcript,
+          confidence: result.alternatives[0].confidence,
+          soundLevel: volume
+        })
+      )
     })
   })
   .on('close', () => {
