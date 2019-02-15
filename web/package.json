@@ -5,6 +5,7 @@
   "dependencies": {
     "react": "^16.8.1",
     "react-dom": "^16.8.1",
+    "react-kawaii": "^0.11.0",
     "socket.io-client": "^2.2.0",
     "styled-components": "^4.1.3"
   },

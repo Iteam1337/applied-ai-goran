@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react'
 import './App.css'
 import styled from 'styled-components'
 import openSocket from 'socket.io-client'
+import { Planet } from 'react-kawaii'
 
 const NoisyBg = styled.div`
   display: flex;
@@ -13,16 +14,6 @@ const NoisyBg = styled.div`
   height: 100vh;
   background-color: ${props => (props.noisy ? 'red' : 'white')};
 `
-
-const smiley = mood => (
-  <div class={`smiley ${mood}`}>
-    <div class="eyes">
-      <div class="eye" />
-      <div class="eye" />
-    </div>
-    <div class="mouth" />
-  </div>
-)
 
 const App = () => {
   const [noisy, setNoisy] = useState(false)
@@ -43,7 +34,12 @@ const App = () => {
     <NoisyBg noisy={noisy}>
       {noisy && 'Shut up!'}
       {JSON.stringify(value)}
-      {smiley(noisy ? 'angry' : value.soundLevel < -50 ? 'normal' : 'happy')}
+      <Planet
+        size={1200}
+        mood={noisy ? 'sad' : value.soundLevel < -50 ? 'happy' : 'blissful'}
+        color="#FCCB7E"
+      />
+      {/* {smiley(noisy ? 'angry' : value.soundLevel < -50 ? 'normal' : 'happy')} */}
     </NoisyBg>
   )
 }
