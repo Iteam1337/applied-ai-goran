@@ -25,7 +25,7 @@ const audioStream = record
   .start({
     sampleRateHertz,
     threshold: 0,
-    verbose: false,
+    verbose: true,
     recordProgram: 'rec',
     silence: '2.0'
   })
