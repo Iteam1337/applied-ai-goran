@@ -9,6 +9,13 @@ const languageCode = 'sv-SE'
 const levels = []
 let volume = 0
 
+const getAvgSoundLevel = () => {
+  const volumes = levels.filter(({ t }) => t > Date.now() - 2000).map(({ volume }) => volume)
+  const avgLevel = volumes.reduce((a, b) => a + b, 0) / volumes.length
+
+  return avgLevel
+}
+
 const logStuff = ({ transcript, confidence, soundLevel }) =>
   console.log(
     JSON.stringify({
@@ -22,9 +29,9 @@ let soundVolumeEmitter
 const resetSoundVolumeEmitter = () => {
   clearTimeout(soundVolumeEmitter)
   soundVolumeEmitter = setTimeout(() => {
-    logStuff({ transcript: '', confidence: 0, soundLevel: volume })
+    logStuff({ transcript: '', confidence: 0, soundLevel: getAvgSoundLevel() })
     resetSoundVolumeEmitter()
-  }, 3000)
+  }, 1500)
 }
 
 const request = {
@@ -66,7 +73,7 @@ const recognizeStream = client
         JSON.stringify({
           transcript: result.alternatives[0].transcript,
           confidence: 1.0, // result.alternatives[0].confidence,
-          soundLevel: volume
+          soundLevel: getAvgSoundLevel()
         })
       )
       resetSoundVolumeEmitter()
@@ -87,11 +94,14 @@ const analyser = new Analyser({
   bufferSize: 44100
 }).on('data', function() {
   volume = this.getFrequencyData().reduce((i, max) => (i > max ? i : max))
-  levels.push(volume)
+  levels.push({ t: Date.now(), volume })
 })
 
 audioStream.pipe(analyser)
 analyser.pipe(recognizeStream)
-resetSoundVolumeEmitter()
+setTimeout(() => 
+  resetSoundVolumeEmitter(),
+  2000
+)
 
-logStuff({ transcript: '', confidence: 0, soundLevel: volume })
+logStuff({ transcript: '', confidence: 0, soundLevel: getAvgSoundLevel() })

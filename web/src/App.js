@@ -4,6 +4,10 @@ import styled from 'styled-components'
 import openSocket from 'socket.io-client'
 import { Planet } from 'react-kawaii'
 
+const NOISE_SOUND_THRESHOLD = -65
+const NOISE_CONFIDENCE_THRESHOLD = 0.8
+let noiseCounter = 0
+
 const NoisyBg = styled.div`
   display: flex;
   flex-direction: column;
@@ -23,9 +27,14 @@ const App = () => {
   useEffect(() => {
     const socket = openSocket('http://localhost:1337')
     socket.on('transcript', ({ transcript, confidence, soundLevel }) => {
-      if (soundLevel) {
-        setValue({ transcript, confidence, soundLevel })
-        setNoisy(confidence <= 0.8 && soundLevel > -55)
+      setValue({ transcript, confidence, soundLevel })
+      if (confidence <= NOISE_CONFIDENCE_THRESHOLD && soundLevel > NOISE_SOUND_THRESHOLD) {
+        noiseCounter++
+        if (noiseCounter > 1) setNoisy(true)
+
+      } else {
+        setNoisy(false)
+        noiseCounter = 0
       }
     })
   }, [])
@@ -35,10 +44,11 @@ const App = () => {
       {noisy && 'Shut up!'}
       {JSON.stringify(value)}
       <Planet
-        size={1200}
-        mood={noisy ? 'sad' : value.soundLevel < -50 ? 'happy' : 'blissful'}
+        size={200}
+        mood={noisy ? 'sad' : value.soundLevel < NOISE_SOUND_THRESHOLD ? 'happy' : 'blissful'}
         color="#FCCB7E"
       />
+      { value.transcript }
       {/* {smiley(noisy ? 'angry' : value.soundLevel < -50 ? 'normal' : 'happy')} */}
     </NoisyBg>
   )
